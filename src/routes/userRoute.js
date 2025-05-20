@@ -1,6 +1,6 @@
 import express from "express";
 import { register } from "../controller/register.js";
-import { login } from "../controller/login.js";
+import { loginUser } from "../controller/login.js";
 import {getEnrolledCourses, getUserDetails, updateProfile} from '../controller/getUserDetails.js';
 import { getPublishedCourses } from "../controller/Course.js";
 import isAuthenticated from "../middleware/isAuthenticated.js";
@@ -13,7 +13,7 @@ const router = express.Router();
 router.route('/register').post(register);
 router.route('/courses').get(getPublishedCourses);
 router.route('/enrolled-courses').get(isAuthenticated, getEnrolledCourses);
-router.route('/login').post(login);
+router.route('/login').post(loginUser);
 router.route('/profile').get(isAuthenticated, getUserDetails);
 router.route('/updateProfile').patch(isAuthenticated, upload.single("profilePhoto"), updateProfile);
 router.route('/logout').get(logout);

@@ -1,48 +1,36 @@
-import User from '../models/User.model.js';
-import bcrypt from 'bcryptjs';
-import { generateWebToken } from '../../utils/generateWebToken.js';
-import jwt from 'jsonwebtoken'
+export const loginUser = async (req, res) => {
+  try {
+    console.log("Request received:", req.body); // ✅ Step 1
 
-export const login = async (req, res) => {
-    try {
-        console.log("request received : ", req.body);
+    const { email, password } = req.body;
 
-        const {email, password} = req.body;
-        if (!email || !password) {
-            return res.status(400).json({
-                success: false,
-                message: "All fields are required"
-            })
-        }
+    const user = await User.findOne({ email }).select("+password");
 
-        const user = await User.findOne({ email });
-        console.log("user founded is : ", user);
-
-        if (!user) {
-            return res.status(400).json({
-                success: false,
-                message: "User does not exists. Create an account"
-            })
-        }
-
-        const passwordMatched = await bcrypt.compare(password, user.password);
-
-        if(!passwordMatched) {
-            return res.status(400).json({
-                success: false,
-                message: "Password incorrect. try again"
-            })
-        }
-
-        generateWebToken(res, user, `Welcome back ${user.name}`);
+    if (!user) {
+      console.log("User not found");
+      return res.status(400).json({
+        success: false,
+        message: "User not registered",
+      });
     }
 
-    catch (err) {
-        console.log(err);
-        return res.status(500).json({
-            success: false,
-            message: "error occured. failed to login"
-        })
-    }
-}
+    const isMatch = await user.comparePassword(password);
 
+    if (!isMatch) {
+      console.log("Incorrect password");
+      return res.status(400).json({
+        success: false,
+        message: "Invalid Email or Password",
+      });
+    }
+
+    console.log("User authenticated, generating token");
+    generateWebToken(res, user, `Welcome back, ${user.name}`);
+  } catch (error) {
+    console.error("Login error:", error); // ✅ Step 2
+    return res.status(500).json({
+      success: false,
+      message: "error occured. failed to login",
+    });
+  }
+};
