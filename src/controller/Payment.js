@@ -79,4 +79,3 @@ export const verifyPayment = async (req, res) => {
         return res.redirect(`${process.env.FRONTEND_URL}/paymentFailed?reference=${razorpay_payment_id}`);
     }
 }
-
