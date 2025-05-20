@@ -27,7 +27,7 @@ export const loginUser = async (req, res) => {
     console.log("User authenticated, generating token");
     generateWebToken(res, user, `Welcome back, ${user.name}`);
   } catch (error) {
-    console.error("Login error:", error); // ✅ Step 2
+    console.error("Login error:", error); 
     return res.status(500).json({
       success: false,
       message: "error occured. failed to login",
