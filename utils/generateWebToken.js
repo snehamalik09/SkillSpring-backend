@@ -1,0 +1,14 @@
+import jwt from 'jsonwebtoken'
+
+export const generateWebToken = (res, user, message) => {
+    console.log("key ",  process.env.SECRET_KEY);
+    const token = jwt.sign({userId : user._id}, process.env.SECRET_KEY, {expiresIn : "1d"});
+    return res.status(200).cookie("token", token, {
+        httpOnly:true,  //not accessible through client side
+        secure:true     //https
+    }).json({
+        success:true,
+        message,
+        user
+    })
+};
