@@ -16,7 +16,7 @@ const PORT = process.env.PORT || 5000;
 connectDB();
 
 
-const allowedOrigins = ['http://localhost:5173', 'https://skillspring-frontend.vercel.app'];
+const allowedOrigins = ['http://localhost:5173','https://skillspring-frontend.vercel.app'];
 
 // CORS setup with dynamic origin
 app.use(cors({

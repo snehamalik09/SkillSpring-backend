@@ -1,6 +1,9 @@
+import User from "../models/User.model.js";
+import { generateWebToken } from "../../utils/generateWebToken.js";
+
 export const loginUser = async (req, res) => {
   try {
-    console.log("Request received:", req.body); // ✅ Step 1
+    console.log("Request received:", req.body); 
 
     const { email, password } = req.body;
 
