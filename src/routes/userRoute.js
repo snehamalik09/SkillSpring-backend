@@ -7,6 +7,7 @@ import isAuthenticated from "../middleware/isAuthenticated.js";
 import { logout } from "../controller/logout.js";
 import upload from "../../utils/multer.js";
 import User from "../models/User.model.js";
+import { SendEmail } from "../../utils/sendEmail.js";
 
 const router = express.Router();
 
@@ -17,6 +18,8 @@ router.route('/login').post(loginUser);
 router.route('/profile').get(isAuthenticated, getUserDetails);
 router.route('/updateProfile').patch(isAuthenticated, upload.single("profilePhoto"), updateProfile);
 router.route('/logout').get(logout);
+router.route('/contact').post(isAuthenticated, SendEmail);
+
 
 router.get("/check-auth", isAuthenticated, async (req, res) => {
   const user = await User.findById(req.id).select("-password");

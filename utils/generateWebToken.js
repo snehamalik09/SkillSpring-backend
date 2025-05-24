@@ -4,7 +4,7 @@ export const generateWebToken = (res, user, message) => {
     console.log("key ",  process.env.SECRET_KEY);
     const token = jwt.sign({userId : user._id}, process.env.SECRET_KEY, {expiresIn : "1d"});
     return res.status(200).cookie("token", token, {
-        httpOnly:true,  //not accessible through client side
+        httpOnly:true,  
         secure:true,
         sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",  
 
