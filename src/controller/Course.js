@@ -86,14 +86,17 @@ export const getCourseById = async (req, res) => {
 export const getPublishedCourses = async (req, res) => {
     try {
         const { isPublished } = req.query;
+        console.log("Incoming query param isPublished:", isPublished);
         let query = {};
         if (isPublished==='true') {
             query.isPublished = true;
         }
 
-        console.log("published : ", query.isPublished);
+        console.log("Final query object:", query);
 
         const courses = await Course.find(query).sort({ createdAt: -1 });
+
+        console.log("Fetched courses:", courses);
 
         return res.status(200).json({
             success: true,

@@ -7,15 +7,22 @@ export const SendEmail = async (req, res) => {
     console.log("Email data : ", data);
 
     let sender = nodemailer.createTransport({
-        service: 'gmail',
+        host: 'smtp.gmail.com',
+        port: 465,
+        secure: true,
         auth: {
             user: process.env.EMAIL_USER,
-            pass: process.env.EMAIL_PASS
+            pass: process.env.EMAIL_PASS,
         },
         tls: {
-            rejectUnauthorized: false,
+            rejectUnauthorized: process.env.NODE_ENV === 'production'
+                ? true
+                : false,
         },
     });
+
+
+
 
     const name = firstName + ' ' + lastName;
 
