@@ -32,8 +32,7 @@ export const SendEmail = async (req, res) => {
         👤 Name: ${name} 
         📧 Email: ${email}
 
-        📝 Message:
-        ${message}
+        📝 Message: ${message}
         ---
 
         Please reply directly to the user's email to respond.
