@@ -63,6 +63,47 @@ export const getCoursesByCreator = async (req, res) => {
     }
 }
 
+export const getPurchasedCoursesOfCreator = async (req, res) => {
+    try {
+
+        const creatorId = req.id;
+        let totalSales = 0;
+        let totalRevenue = 0;
+
+        const allCourses = await Course.find({ creator: creatorId, isPublished: true });
+
+        console.log("request received ");
+        console.log("request id : ", creatorId);
+
+        const purchasedCourses = allCourses.filter((course) => {
+            const enrolledCount = course.enrolledStudents.length;
+            if (enrolledCount > 0) {
+                totalSales += enrolledCount;
+                totalRevenue += enrolledCount * course.coursePrice;
+                return true;
+            }
+            return false;
+        })
+
+        console.log("purchasec courses : ", purchasedCourses);
+
+
+        return res.status(200).json({
+            success: true,
+            message: "Purchased courses fetched successfully",
+            courses: purchasedCourses,
+            totalSales,
+            totalRevenue
+        })
+    }
+    catch (err) {
+        return res.status(500).json({
+            success: false,
+            message: "Error occured in fetching purchased course"
+        })
+    }
+}
+
 export const getCourseById = async (req, res) => {
     try {
         const courseId = req.params.courseId;
@@ -88,7 +129,7 @@ export const getPublishedCourses = async (req, res) => {
         const { isPublished } = req.query;
         console.log("Incoming query param isPublished:", isPublished);
         let query = {};
-        if (isPublished==='true') {
+        if (isPublished === 'true') {
             query.isPublished = true;
         }
 
@@ -238,35 +279,35 @@ export const togglePublishCourse = async (req, res) => {
 
 export const searchCourse = async (req, res) => {
     try {
-        const {query = "", categories=[], sortByPrice} = req.query;
+        const { query = "", categories = [], sortByPrice } = req.query;
 
         const searchCriteria = {
-            isPublished:true,
-            $or : [
-                {courseTitle: {$regex:query, $options:"i"}},
-                {description: {$regex:query, $options:"i"}},
-                {category: {$regex:query, $options:"i"}},
+            isPublished: true,
+            $or: [
+                { courseTitle: { $regex: query, $options: "i" } },
+                { description: { $regex: query, $options: "i" } },
+                { category: { $regex: query, $options: "i" } },
             ]
         }
 
-        if(categories.length>0)
-            searchCriteria.category = {$in:categories}
+        if (categories.length > 0)
+            searchCriteria.category = { $in: categories }
 
 
         const sortOptions = {};
 
-        if(sortByPrice=="low")
+        if (sortByPrice == "low")
             sortOptions.coursePrice = 1;
 
-        else if(sortByPrice=="high")
+        else if (sortByPrice == "high")
             sortOptions.coursePrice = -1;
 
-        let courses = await Course.find(searchCriteria).populate({path:"creator", select:"name profilePhoto"}).sort(sortOptions);
+        let courses = await Course.find(searchCriteria).populate({ path: "creator", select: "name profilePhoto" }).sort(sortOptions);
 
         return res.status(200).json({
             success: true,
             message: `Courses fetched successfully`,
-            courses:courses || []
+            courses: courses || []
         })
     }
     catch (err) {
